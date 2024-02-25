@@ -52,7 +52,7 @@ class MainGui(ctk.CTk):
         encoded_words = []
         self.textbox_result.delete("1.0", ctk.END)
 
-        # tutaj pomysl zeby znalezc tekst przed "\n" i go przetlumaczyc potem po "\n" i tez przetlumaczyc ale w nowej linijce
+        # tutaj pomysl zeby znalec tekst przed "\n" i go przetlumaczyc potem po "\n" i tez przetlumaczyc ale w nowej linijce
         for words in self.textbox.get("0.0", "end").upper().strip().split("\n"):
             for character in words:
                 encoded_words.append(self.morse_code_dict[character])
