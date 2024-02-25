@@ -13,7 +13,7 @@ morse_code_dict = {
 # choice = input("Encode or Decode?: ").lower()
 # words = input("Enter word/s to translate: ").upper()
 
-
+# xczxczxc
 def encode(text):
     encoded_words = []
 
