@@ -3,7 +3,7 @@ import customtkinter as ctk
 ctk.set_appearance_mode("dark")
 
 
-class MainGui(ctk.CTk):
+class MorseCode(ctk.CTk):
     def __init__(self):
         super().__init__()
 
@@ -15,6 +15,8 @@ class MainGui(ctk.CTk):
             'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
             'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
             'Y': '-.--', 'Z': '--..',
+            'Ą': '.-.-', 'Ć': '-.-..', 'Ę': '..-..', 'Ł': '.-..-', 'Ń': '--.--', 'Ó': '---.', 'Ś': '...-...',
+            'Ż': '--..-.', 'Ź': '--..-',
             '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
             '6': '-....', '7': '--...', '8': '---..', '9': '----.',
             '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.',
@@ -70,9 +72,9 @@ class MainGui(ctk.CTk):
         for code in self.textbox.get("0.0", "end").split():
             decoded_words += [key for key, value in self.morse_code_dict.items() if code == value]
 
-        self.textbox_result.insert(index=0.0, text="".join(decoded_words))
+        self.textbox_result.insert(index=0.0, text="".join(decoded_words).lower())
 
 
 if __name__ == "__main__":
-    app = MainGui()
+    app = MorseCode()
     app.mainloop()
