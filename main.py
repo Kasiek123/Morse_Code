@@ -24,30 +24,22 @@ class MorseCode(ctk.CTk):
             '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.', ' ': '/'
         }
 
-        self.textbox = ctk.CTkTextbox(master=self,
-                                      width=700,
-                                      height=200,
-                                      font=("Arial", 13, "bold"))
+        self.textbox = ctk.CTkTextbox(master=self, width=700, height=200, font=("Arial", 13, "bold"))
         self.textbox.pack(padx=10, pady=10)
 
-        self.button_frame = ctk.CTkFrame(master=self,
-                                         fg_color="transparent")
+        self.button_frame = ctk.CTkFrame(master=self, fg_color="transparent")
         self.button_frame.pack()
 
-        self.button_encode = ctk.CTkButton(master=self.button_frame,
-                                           text="Encode",
-                                           command=self.encode)
+        self.button_encode = ctk.CTkButton(master=self.button_frame, text="Encode", command=self.encode)
         self.button_encode.pack(side="left", padx=10, pady=10)
 
-        self.button_decode = ctk.CTkButton(master=self.button_frame,
-                                           text="Decode",
-                                           command=self.decode)
+        self.button_decode = ctk.CTkButton(master=self.button_frame, text="Decode", command=self.decode)
         self.button_decode.pack(side="left", padx=10, pady=10)
 
-        self.textbox_result = ctk.CTkTextbox(master=self,
-                                             width=700,
-                                             height=200,
-                                             font=("Arial", 27))
+        self.button_clear = ctk.CTkButton(master=self.button_frame, text="Clear", command=self.clear)
+        self.button_clear.pack(side="left", padx=10, pady=10)
+
+        self.textbox_result = ctk.CTkTextbox(master=self, width=700, height=200, font=("Arial", 27))
         self.textbox_result.pack(padx=10, pady=10)
 
     def encode(self):
@@ -73,6 +65,9 @@ class MorseCode(ctk.CTk):
             decoded_words += [key for key, value in self.morse_code_dict.items() if code == value]
 
         self.textbox_result.insert(index=0.0, text="".join(decoded_words).lower())
+
+    def clear(self):
+        self.textbox.delete("1.0", ctk.END)
 
 
 if __name__ == "__main__":
