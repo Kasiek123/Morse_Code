@@ -39,26 +39,38 @@ class MainGui(ctk.CTk):
 
         self.button_decode = ctk.CTkButton(master=self.button_frame,
                                            text="Decode",
-                                           )
+                                           command=self.decode)
         self.button_decode.pack(side="left", padx=10, pady=10)
 
         self.textbox_result = ctk.CTkTextbox(master=self,
                                              width=700,
                                              height=200,
-                                             font=("Arial", 20))
+                                             font=("Arial", 27))
         self.textbox_result.pack(padx=10, pady=10)
 
     def encode(self):
-        encoded_words = []
+        self.textbox_result.configure(state="normal")
         self.textbox_result.delete("1.0", ctk.END)
+        encoded_words = []
 
-        # tutaj pomysl zeby znalec tekst przed "\n" i go przetlumaczyc potem po "\n" i tez przetlumaczyc ale w nowej linijce
-        for words in self.textbox.get("0.0", "end").upper().strip().split("\n"):
-            for character in words:
-                encoded_words.append(self.morse_code_dict[character])
+        for words in self.textbox.get("0.0", "end").upper().strip():
+            if words == "\n":
+                encoded_words.append("/")
+            else:
+                for character in words:
+                    encoded_words.append(self.morse_code_dict[character])
 
         self.textbox_result.insert(index=0.0, text=" ".join(encoded_words))
         self.textbox_result.configure(state="disabled")
+
+    def decode(self):
+        self.textbox_result.configure(state="normal")
+        self.textbox_result.delete("1.0", ctk.END)
+        decoded_words = []
+        for code in self.textbox.get("0.0", "end").split():
+            decoded_words += [key for key, value in self.morse_code_dict.items() if code == value]
+
+        self.textbox_result.insert(index=0.0, text="".join(decoded_words))
 
 
 if __name__ == "__main__":
