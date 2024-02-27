@@ -1,4 +1,6 @@
 import customtkinter as ctk
+from morse_dict import morse_code_dict
+from morse_alphabet import MorseAlphabet
 
 ctk.set_appearance_mode("dark")
 
@@ -7,24 +9,11 @@ class MorseCode(ctk.CTk):
     def __init__(self):
         super().__init__()
 
-        self.title("Morse Code")
+        self.title("Morse Code Translator")
         self.geometry("900x500")
         self.resizable(False, False)
 
-        self.morse_code_dict = {
-            'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
-            'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..', 'M': '--', 'N': '-.', 'O': '---', 'P': '.--.',
-            'Q': '--.-', 'R': '.-.', 'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
-            'Y': '-.--', 'Z': '--..',
-            'Ą': '.-.-', 'Ć': '-.-..', 'Ę': '..-..', 'Ł': '.-..-', 'Ń': '--.--', 'Ó': '---.', 'Ś': '...-...',
-            'Ż': '--..-.', 'Ź': '--..-',
-            '0': '-----', '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
-            '6': '-....', '7': '--...', '8': '---..', '9': '----.',
-            '.': '.-.-.-', ',': '--..--', '?': '..--..', "'": '.----.', '!': '-.-.--', '/': '-..-.', '(': '-.--.',
-            ')': '-.--.-', '&': '.-...', ':': '---...', ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '-': '-....-',
-            '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.', ' ': '/'
-        }
-
+        self.morse_code_dict = morse_code_dict
         self.radio_var = ctk.IntVar()
 
         self.radiobutton_frame = ctk.CTkFrame(master=self, fg_color="transparent")
@@ -50,11 +39,17 @@ class MorseCode(ctk.CTk):
         self.textbox_result = ctk.CTkTextbox(master=self.textbox_frame, width=700, height=200, font=("Arial", 27))
         self.textbox_result.pack(padx=10, pady=10)
 
-        self.translate = ctk.CTkButton(master=self.button_frame, text="Translate", font=("Arial", 15,"bold"), command=self.translate)
+        self.translate = ctk.CTkButton(master=self.button_frame, text="Translate", font=("Arial", 15, "bold"),
+                                       command=self.translate)
         self.translate.pack(padx=10, pady=10)
 
-        self.button_clear = ctk.CTkButton(master=self.button_frame, text="Clear", font=("Arial", 15, "bold"), command=self.clear)
+        self.button_clear = ctk.CTkButton(master=self.button_frame, text="Clear", font=("Arial", 15, "bold"),
+                                          command=self.clear)
         self.button_clear.pack(padx=10, pady=10)
+
+        self.alphabet = ctk.CTkButton(master=self.button_frame, text="Alphabet", font=("Arial", 15, "bold"),
+                                      command=self.alphabet_window)
+        self.alphabet.pack(padx=10, pady=10)
 
     def translate(self):
         selected_option = self.radio_var.get()
@@ -67,28 +62,39 @@ class MorseCode(ctk.CTk):
     def encode(self):
         self.textbox_result.configure(state="normal")
         self.textbox_result.delete("1.0", ctk.END)
+        if not self.textbox.get("0.0", "end").upper().split():
+            self.textbox_result.insert(index=0.0, text="Nothing to translate")
+        else:
+            encoded_words = [
+                '/' if word == '\n' else self.morse_code_dict[character]
+                for word in self.textbox.get("0.0", "end").upper().strip()
+                for character in word
+            ]
 
-        encoded_words = [
-            '/' if word == '\n' else self.morse_code_dict[character]
-            for word in self.textbox.get("0.0", "end").upper().strip()
-            for character in word
-        ]
-
-        self.textbox_result.insert(index=0.0, text=" ".join(encoded_words))
+            self.textbox_result.insert(index=0.0, text=" ".join(encoded_words))
         self.textbox_result.configure(state="disabled")
 
     def decode(self):
         self.textbox_result.configure(state="normal")
         self.textbox_result.delete("1.0", ctk.END)
-        decoded_words = [
-            key for code in self.textbox.get("0.0", "end").split()
-            for key, value in self.morse_code_dict.items() if code == value
-        ]
 
-        self.textbox_result.insert(index=0.0, text="".join(decoded_words).lower())
+        if not all(i in self.morse_code_dict.values() for i in self.textbox.get("0.0", "end").upper().split()):
+            self.textbox_result.insert(index=0.0, text='The text to be translated should contain only "." or "_" or "/"."')
+        else:
+            decoded_words = [
+                key for code in self.textbox.get("0.0", "end").split()
+                for key, value in self.morse_code_dict.items() if code == value
+            ]
+
+            self.textbox_result.insert(index=0.0, text="".join(decoded_words).lower())
+
+        self.textbox_result.configure(state="disabled")
 
     def clear(self):
         self.textbox.delete("1.0", ctk.END)
+
+    def alphabet_window(self):
+        MorseAlphabet(self.textbox)
 
 
 if __name__ == "__main__":
