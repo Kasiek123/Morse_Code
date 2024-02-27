@@ -4,6 +4,7 @@ ctk.set_appearance_mode("dark")
 
 
 class MorseCode(ctk.CTk):
+    # not finished
     def __init__(self):
         super().__init__()
 
