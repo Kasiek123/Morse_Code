@@ -8,7 +8,8 @@ class MorseCode(ctk.CTk):
         super().__init__()
 
         self.title("Morse Code")
-        self.minsize(800, 500)
+        self.geometry("900x500")
+        self.resizable(False, False)
 
         self.morse_code_dict = {
             'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.', 'G': '--.', 'H': '....',
@@ -24,35 +25,54 @@ class MorseCode(ctk.CTk):
             '_': '..--.-', '"': '.-..-.', '$': '...-..-', '@': '.--.-.', ' ': '/'
         }
 
-        self.textbox = ctk.CTkTextbox(master=self, width=700, height=200, font=("Arial", 13, "bold"))
-        self.textbox.pack(padx=10, pady=10)
+        self.radio_var = ctk.IntVar()
+
+        self.radiobutton_frame = ctk.CTkFrame(master=self, fg_color="transparent")
+        self.radiobutton_frame.grid(row=0, column=1, columnspan=3)
 
         self.button_frame = ctk.CTkFrame(master=self, fg_color="transparent")
-        self.button_frame.pack()
+        self.button_frame.grid(row=0, column=0, rowspan=3)
 
-        self.button_encode = ctk.CTkButton(master=self.button_frame, text="Encode", command=self.encode)
-        self.button_encode.pack(side="left", padx=10, pady=10)
+        self.textbox_frame = ctk.CTkFrame(master=self, fg_color="transparent")
+        self.textbox_frame.grid(row=1, column=1, columnspan=2, rowspan=2)
 
-        self.button_decode = ctk.CTkButton(master=self.button_frame, text="Decode", command=self.decode)
-        self.button_decode.pack(side="left", padx=10, pady=10)
+        self.radiobutton_encode = ctk.CTkRadioButton(master=self.radiobutton_frame, text="Encode",
+                                                     border_width_checked=3, variable=self.radio_var, value=0)
+        self.radiobutton_encode.pack(side="left", padx=10, pady=10)
 
-        self.button_clear = ctk.CTkButton(master=self.button_frame, text="Clear", command=self.clear)
-        self.button_clear.pack(side="left", padx=10, pady=10)
+        self.radiobutton_decode = ctk.CTkRadioButton(master=self.radiobutton_frame, text="Decode",
+                                                     border_width_checked=3, variable=self.radio_var, value=1)
+        self.radiobutton_decode.pack(side="left", padx=10, pady=10)
 
-        self.textbox_result = ctk.CTkTextbox(master=self, width=700, height=200, font=("Arial", 27))
+        self.textbox = ctk.CTkTextbox(master=self.textbox_frame, width=700, height=200, font=("Arial", 13, "bold"))
+        self.textbox.pack(padx=10, pady=10)
+
+        self.textbox_result = ctk.CTkTextbox(master=self.textbox_frame, width=700, height=200, font=("Arial", 27))
         self.textbox_result.pack(padx=10, pady=10)
+
+        self.translate = ctk.CTkButton(master=self.button_frame, text="Translate", font=("Arial", 15,"bold"), command=self.translate)
+        self.translate.pack(padx=10, pady=10)
+
+        self.button_clear = ctk.CTkButton(master=self.button_frame, text="Clear", font=("Arial", 15, "bold"), command=self.clear)
+        self.button_clear.pack(padx=10, pady=10)
+
+    def translate(self):
+        selected_option = self.radio_var.get()
+
+        if selected_option == 0:
+            self.encode()
+        else:
+            self.decode()
 
     def encode(self):
         self.textbox_result.configure(state="normal")
         self.textbox_result.delete("1.0", ctk.END)
-        encoded_words = []
 
-        for words in self.textbox.get("0.0", "end").upper().strip():
-            if words == "\n":
-                encoded_words.append("/")
-            else:
-                for character in words:
-                    encoded_words.append(self.morse_code_dict[character])
+        encoded_words = [
+            '/' if word == '\n' else self.morse_code_dict[character]
+            for word in self.textbox.get("0.0", "end").upper().strip()
+            for character in word
+        ]
 
         self.textbox_result.insert(index=0.0, text=" ".join(encoded_words))
         self.textbox_result.configure(state="disabled")
@@ -60,9 +80,10 @@ class MorseCode(ctk.CTk):
     def decode(self):
         self.textbox_result.configure(state="normal")
         self.textbox_result.delete("1.0", ctk.END)
-        decoded_words = []
-        for code in self.textbox.get("0.0", "end").split():
-            decoded_words += [key for key, value in self.morse_code_dict.items() if code == value]
+        decoded_words = [
+            key for code in self.textbox.get("0.0", "end").split()
+            for key, value in self.morse_code_dict.items() if code == value
+        ]
 
         self.textbox_result.insert(index=0.0, text="".join(decoded_words).lower())
 
