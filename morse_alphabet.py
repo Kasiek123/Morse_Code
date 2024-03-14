@@ -20,7 +20,7 @@ class MorseAlphabet(ctk.CTkToplevel):
         self.morse_code_dict = morse_code_dict  # Morse code dictionary
         self.textbox = textbox  # Textbox for user input
 
-        # Framge to hold the buttons
+        # Frame to hold the buttons
         self.buttons_frame = ctk.CTkFrame(master=self, fg_color="transparent")
         self.buttons_frame.pack(fill=ctk.BOTH, expand=True, padx=10, pady=10)
 
